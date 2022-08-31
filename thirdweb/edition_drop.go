@@ -7,21 +7,21 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 	"github.com/mitchellh/mapstructure"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
 )
 
 // You can access the Edition Drop interface from the SDK as follows:
 //
-// 	import (
-// 		"github.com/thirdweb-dev/go-sdk/thirdweb"
-// 	)
+//	import (
+//		"github.com/thirdweb-dev/go-sdk/thirdweb"
+//	)
 //
-// 	privateKey = "..."
+//	privateKey = "..."
 //
-// 	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
+//	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
 //		PrivateKey: privateKey,
-// 	})
+//	})
 //
 //	contract, err := sdk.GetEditionDrop("{{contract_address}}")
 type EditionDrop struct {
@@ -73,32 +73,32 @@ func newEditionDrop(provider *ethclient.Client, address common.Address, privateK
 //
 // Example
 //
-// 	image0, err := os.Open("path/to/image/0.jpg")
-// 	defer image0.Close()
+//	image0, err := os.Open("path/to/image/0.jpg")
+//	defer image0.Close()
 //
-// 	image1, err := os.Open("path/to/image/1.jpg")
-// 	defer image1.Close()
+//	image1, err := os.Open("path/to/image/1.jpg")
+//	defer image1.Close()
 //
-// 	metadatasWithSupply := []*thirdweb.EditionMetadataInput{
-// 		&thirdweb.EditionMetadataInput{
-// 			Metadata: &thirdweb.NFTMetadataInput{
-// 				Name: "Cool NFT",
-// 				Description: "This is a cool NFT",
-// 				Image: image0,
-// 			},
-// 			Supply: 100,
-// 		},
-// 		&thirdweb.EditionMetadataInput{
-// 			Metadata: &thirdweb.NFTMetadataInput{
-// 				Name: "Cool NFT",
-// 				Description: "This is a cool NFT",
-// 				Image: image1,
-// 			},
-// 			Supply: 100,
-// 		},
-// 	}
+//	metadatasWithSupply := []*thirdweb.EditionMetadataInput{
+//		&thirdweb.EditionMetadataInput{
+//			Metadata: &thirdweb.NFTMetadataInput{
+//				Name: "Cool NFT",
+//				Description: "This is a cool NFT",
+//				Image: image0,
+//			},
+//			Supply: 100,
+//		},
+//		&thirdweb.EditionMetadataInput{
+//			Metadata: &thirdweb.NFTMetadataInput{
+//				Name: "Cool NFT",
+//				Description: "This is a cool NFT",
+//				Image: image1,
+//			},
+//			Supply: 100,
+//		},
+//	}
 //
-// 	tx, err := contract.MintBatchTo("{{wallet_address}}", metadatasWithSupply)
+//	tx, err := contract.MintBatchTo("{{wallet_address}}", metadatasWithSupply)
 func (drop *EditionDrop) CreateBatch(metadatas []*NFTMetadataInput) (*types.Transaction, error) {
 	startNumber, err := drop.abi.NextTokenIdToMint(&bind.CallOpts{})
 	if err != nil {
@@ -163,11 +163,11 @@ func (drop *EditionDrop) Claim(tokenId int, quantity int) (*types.Transaction, e
 //
 // Example
 //
-// 	address = "{{wallet_address}}"
-// 	tokenId = 0
-// 	quantity = 1
+//	address = "{{wallet_address}}"
+//	tokenId = 0
+//	quantity = 1
 //
-// 	tx, err := contract.ClaimTo(address, tokenId, quantity)
+//	tx, err := contract.ClaimTo(address, tokenId, quantity)
 func (drop *EditionDrop) ClaimTo(destinationAddress string, tokenId int, quantity int) (*types.Transaction, error) {
 	claimVerification, err := drop.prepareClaim(tokenId, quantity)
 	if err != nil {

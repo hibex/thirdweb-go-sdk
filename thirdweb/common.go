@@ -15,9 +15,9 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/fxamacker/cbor"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 	"github.com/mitchellh/mapstructure"
 	"github.com/shopspring/decimal"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
 )
 
 // NFT

@@ -11,20 +11,20 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 )
 
 // You can access the Marketplace interface from the SDK as follows:
 //
-// 	import (
-// 		"github.com/thirdweb-dev/go-sdk/thirdweb"
-// 	)
+//	import (
+//		"github.com/thirdweb-dev/go-sdk/thirdweb"
+//	)
 //
-// 	privateKey = "..."
+//	privateKey = "..."
 //
-// 	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
+//	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
 //		PrivateKey: privateKey,
-// 	})
+//	})
 //
 //	contract, err := sdk.GetMarketplace("{{contract_address}}")
 type Marketplace struct {
@@ -63,8 +63,8 @@ func newMarketplace(provider *ethclient.Client, address common.Address, privateK
 //
 // Example
 //
-// 	listingId := 0
-// 	listing, err := marketplace.GetListing(listingId)
+//	listingId := 0
+//	listing, err := marketplace.GetListing(listingId)
 func (marketplace *Marketplace) GetListing(listingId int) (*DirectListing, error) {
 	listing, err := marketplace.abi.Listings(&bind.CallOpts{}, big.NewInt(int64(listingId)))
 	if err != nil {
@@ -90,9 +90,9 @@ func (marketplace *Marketplace) GetListing(listingId int) (*DirectListing, error
 //
 // Example
 //
-// 	listings, err := marketplace.GetActiveListings()
-// 	// Price per token of the first listing
-// 	listings[0].BuyoutCurrencyValuePerToken.DisplayValue
+//	listings, err := marketplace.GetActiveListings()
+//	// Price per token of the first listing
+//	listings[0].BuyoutCurrencyValuePerToken.DisplayValue
 func (marketplace *Marketplace) GetActiveListings(filter *MarketplaceFilter) ([]*DirectListing, error) {
 	listings, err := marketplace.getAllListingsNoFilter()
 	if err != nil {
@@ -121,9 +121,10 @@ func (marketplace *Marketplace) GetActiveListings(filter *MarketplaceFilter) ([]
 // returns: all listings in the marketplace
 //
 // Example
-// 	listings, err := marketplace.GetAllListings()
-// 	// Price per token of the first listing
-// 	listings[0].BuyoutCurrencyValuePerToken.DisplayValue
+//
+//	listings, err := marketplace.GetAllListings()
+//	// Price per token of the first listing
+//	listings[0].BuyoutCurrencyValuePerToken.DisplayValue
 func (marketplace *Marketplace) GetAllListings(filter *MarketplaceFilter) ([]*DirectListing, error) {
 	listings, err := marketplace.getAllListingsNoFilter()
 	if err != nil {
@@ -153,8 +154,8 @@ func (marketplace *Marketplace) GetTotalCount() (int, error) {
 //
 // Example
 //
-// 	listingId := 0
-// 	receipt, err := marketplace.CancelListing(listingId)
+//	listingId := 0
+//	receipt, err := marketplace.CancelListing(listingId)
 func (marketplace *Marketplace) CancelListing(listingId int) (*types.Transaction, error) {
 	txOpts, err := marketplace.helper.getTxOptions()
 	if err != nil {
@@ -192,10 +193,10 @@ func (marketplace *Marketplace) BuyoutListing(listingId int, quantityDesired int
 //
 // Example
 //
-// 	listingId := 0
-// 	quantityDesired := 1
-// 	receiver := "0x..."
-// 	receipt, err := marketplace.BuyoutListingTo(listingId, quantityDesired, receiver)
+//	listingId := 0
+//	quantityDesired := 1
+//	receiver := "0x..."
+//	receipt, err := marketplace.BuyoutListingTo(listingId, quantityDesired, receiver)
 func (marketplace *Marketplace) BuyoutListingTo(listingId int, quantityDesired int, receiver string) (*types.Transaction, error) {
 	listing, err := marketplace.validateListing(listingId)
 	if err != nil {
@@ -252,17 +253,17 @@ func (marketplace *Marketplace) BuyoutListingTo(listingId int, quantityDesired i
 //
 // Example
 //
-// 	listing := &NewDirectListing{
-// 		AssetContractAddress: "0x...", // Address of the asset contract
-// 		TokenId: 0, // Token ID of the asset to list
-// 		StartTimeInEpochSeconds: int(time.Now().Unix()), // Defaults to current time
-// 		ListingDurationInSeconds: int(time.Now().Unix() + 3600), // Defaults to current time + 1 hour
-// 		Quantity: 1, // Quantity of the asset to list
-// 		CurrencyContractAddress: "0x...", // Contract address of currency to sell for, defaults to native token
-// 		BuyoutPricePerToken: 1, // Price per token of the asset to list
-// 	}
+//	listing := &NewDirectListing{
+//		AssetContractAddress: "0x...", // Address of the asset contract
+//		TokenId: 0, // Token ID of the asset to list
+//		StartTimeInEpochSeconds: int(time.Now().Unix()), // Defaults to current time
+//		ListingDurationInSeconds: int(time.Now().Unix() + 3600), // Defaults to current time + 1 hour
+//		Quantity: 1, // Quantity of the asset to list
+//		CurrencyContractAddress: "0x...", // Contract address of currency to sell for, defaults to native token
+//		BuyoutPricePerToken: 1, // Price per token of the asset to list
+//	}
 //
-// 	listingId, err := marketplace.CreateListing(listing)
+//	listingId, err := marketplace.CreateListing(listing)
 func (marketplace *Marketplace) CreateListing(listing *NewDirectListing) (int, error) {
 	listing.fillDefaults()
 

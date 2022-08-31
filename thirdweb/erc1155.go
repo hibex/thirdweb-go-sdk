@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 )
 
 // This interface is currently support by the Edition and Edition Drop contracts.
@@ -47,9 +47,9 @@ func newERC1155(provider *ethclient.Client, address common.Address, privateKey s
 //
 // Example
 //
-// 	nft, err := contract.Get(0)
-//  supply := nft.Supply
-// 	name := nft.Metadata.Name
+//		nft, err := contract.Get(0)
+//	 supply := nft.Supply
+//		name := nft.Metadata.Name
 func (erc1155 *ERC1155) Get(tokenId int) (*EditionMetadata, error) {
 	supply := 0
 	if totalSupply, err := erc1155.abi.TotalSupply(&bind.CallOpts{}, big.NewInt(int64(tokenId))); err == nil {
@@ -73,9 +73,9 @@ func (erc1155 *ERC1155) Get(tokenId int) (*EditionMetadata, error) {
 //
 // Example
 //
-// 	nfts, err := contract.GetAll()
-// 	supplyOne := nfts[0].Supply
-// 	nameOne := nfts[0].Metadata.Name
+//	nfts, err := contract.GetAll()
+//	supplyOne := nfts[0].Supply
+//	nameOne := nfts[0].Metadata.Name
 func (erc1155 *ERC1155) GetAll() ([]*EditionMetadata, error) {
 	if totalCount, err := erc1155.GetTotalCount(); err != nil {
 		return nil, err
@@ -108,9 +108,9 @@ func (erc1155 *ERC1155) GetTotalCount() (int, error) {
 //
 // Example
 //
-// 	owner := "{{wallet_address}}"
-// 	nfts, err := contract.GetOwned(owner)
-// 	name := nfts[0].Metadata.Name
+//	owner := "{{wallet_address}}"
+//	nfts, err := contract.GetOwned(owner)
+//	name := nfts[0].Metadata.Name
 func (erc1155 *ERC1155) GetOwned(address string) ([]*EditionMetadataOwner, error) {
 	if address == "" {
 		address = erc1155.helper.GetSignerAddress().String()
@@ -186,9 +186,9 @@ func (erc1155 *ERC1155) Balance(tokenId int) (int, error) {
 //
 // Example
 //
-// 	address := "{{wallet_address}}"
-// 	tokenId := 0
-// 	balance, err := contract.BalanceOf(address, tokenId)
+//	address := "{{wallet_address}}"
+//	tokenId := 0
+//	balance, err := contract.BalanceOf(address, tokenId)
 func (erc1155 *ERC1155) BalanceOf(address string, tokenId int) (int, error) {
 	balance, err := erc1155.abi.BalanceOf(&bind.CallOpts{}, common.HexToAddress(address), big.NewInt(int64(tokenId)))
 	if err != nil {
@@ -221,11 +221,11 @@ func (erc1155 *ERC1155) IsApproved(address string, operator string) (bool, error
 //
 // Example
 //
-// 	to := "0x..."
-// 	tokenId := 0
-// 	amount := 1
+//	to := "0x..."
+//	tokenId := 0
+//	amount := 1
 //
-// 	tx, err := contract.Transfer(to, tokenId, amount)
+//	tx, err := contract.Transfer(to, tokenId, amount)
 func (erc1155 *ERC1155) Transfer(to string, tokenId int, amount int) (*types.Transaction, error) {
 	txOpts, err := erc1155.helper.getTxOptions()
 	if err != nil {
@@ -255,9 +255,9 @@ func (erc1155 *ERC1155) Transfer(to string, tokenId int, amount int) (*types.Tra
 //
 // Example
 //
-// 	tokenId := 0
-// 	amount := 1
-// 	tx, err := contract.Burn(tokenId, amount)
+//	tokenId := 0
+//	amount := 1
+//	tx, err := contract.Burn(tokenId, amount)
 func (erc1155 *ERC1155) Burn(tokenId int, amount int) (*types.Transaction, error) {
 	address := erc1155.helper.GetSignerAddress()
 	txOpts, err := erc1155.helper.getTxOptions()

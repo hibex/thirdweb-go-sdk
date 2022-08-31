@@ -6,20 +6,20 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 )
 
 // You can access the Edition interface from the SDK as follows:
 //
-// 	import (
-// 		"github.com/thirdweb-dev/go-sdk/thirdweb"
-// 	)
+//	import (
+//		"github.com/thirdweb-dev/go-sdk/thirdweb"
+//	)
 //
-// 	privateKey = "..."
+//	privateKey = "..."
 //
-// 	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
+//	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
 //		PrivateKey: privateKey,
-// 	})
+//	})
 //
 //	contract, err := sdk.GetEdition("{{contract_address}}")
 type Edition struct {
@@ -84,19 +84,19 @@ func (edition *Edition) Mint(metadataWithSupply *EditionMetadataInput) (*types.T
 //
 // Example
 //
-// 	image, err := os.Open("path/to/image.jpg")
-// 	defer image.Close()
+//	image, err := os.Open("path/to/image.jpg")
+//	defer image.Close()
 //
-// 	metadataWithSupply := &thirdweb.EditionMetadataInput{
-// 		Metadata: &thirdweb.NFTMetadataInput{
-// 			Name: "Cool NFT",
-// 			Description: "This is a cool NFT",
-// 			Image: image,
-// 		},
-// 		Supply: 100,
-// 	}
+//	metadataWithSupply := &thirdweb.EditionMetadataInput{
+//		Metadata: &thirdweb.NFTMetadataInput{
+//			Name: "Cool NFT",
+//			Description: "This is a cool NFT",
+//			Image: image,
+//		},
+//		Supply: 100,
+//	}
 //
-// 	tx, err := contract.MintTo("{{wallet_address}}", metadataWithSupply)
+//	tx, err := contract.MintTo("{{wallet_address}}", metadataWithSupply)
 func (edition *Edition) MintTo(address string, metadataWithSupply *EditionMetadataInput) (*types.Transaction, error) {
 	uri, err := uploadOrExtractUri(metadataWithSupply.Metadata, edition.storage)
 	if err != nil {
@@ -186,24 +186,24 @@ func (edition *Edition) MintBatch(metadatasWithSupply []*EditionMetadataInput) (
 //
 // Example
 //
-// 	metadatasWithSupply := []*thirdweb.EditionMetadataInput{
-// 		&thirdweb.EditionMetadataInput{
-// 			Metadata: &thirdweb.NFTMetadataInput{
-// 				Name: "Cool NFT",
-// 				Description: "This is a cool NFT",
-// 			},
-// 			Supply: 100,
-// 		},
-// 		&thirdweb.EditionMetadataInput{
-// 			Metadata: &thirdweb.NFTMetadataInput{
-// 				Name: "Cool NFT",
-// 				Description: "This is a cool NFT",
-// 			},
-// 			Supply: 100,
-// 		},
-// 	}
+//	metadatasWithSupply := []*thirdweb.EditionMetadataInput{
+//		&thirdweb.EditionMetadataInput{
+//			Metadata: &thirdweb.NFTMetadataInput{
+//				Name: "Cool NFT",
+//				Description: "This is a cool NFT",
+//			},
+//			Supply: 100,
+//		},
+//		&thirdweb.EditionMetadataInput{
+//			Metadata: &thirdweb.NFTMetadataInput{
+//				Name: "Cool NFT",
+//				Description: "This is a cool NFT",
+//			},
+//			Supply: 100,
+//		},
+//	}
 //
-// 	tx, err := contract.MintBatchTo("{{wallet_address}}", metadatasWithSupply)
+//	tx, err := contract.MintBatchTo("{{wallet_address}}", metadatasWithSupply)
 func (edition *Edition) MintBatchTo(to string, metadatasWithSupply []*EditionMetadataInput) (*types.Transaction, error) {
 	metadatas := []*NFTMetadataInput{}
 	for _, metadataWithSupply := range metadatasWithSupply {

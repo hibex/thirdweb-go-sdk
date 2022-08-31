@@ -7,8 +7,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 	"github.com/mitchellh/mapstructure"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
 )
 
 // You can access the NFT Drop interface from the SDK as follows:

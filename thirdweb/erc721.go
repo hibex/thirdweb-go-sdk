@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 )
 
 // This interface is currently support by the NFT Collection and NFT Drop contracts.
@@ -47,9 +47,9 @@ func newERC721(provider *ethclient.Client, address common.Address, privateKey st
 //
 // Example
 //
-// 	nft, err := contract.Get(0)
-//  owner := nft.Owner
-// 	name := nft.Metadata.Name
+//		nft, err := contract.Get(0)
+//	 owner := nft.Owner
+//		name := nft.Metadata.Name
 func (erc721 *ERC721) Get(tokenId int) (*NFTMetadataOwner, error) {
 	owner := "0x0000000000000000000000000000000000000000"
 	if address, err := erc721.OwnerOf(tokenId); err == nil {
@@ -73,9 +73,9 @@ func (erc721 *ERC721) Get(tokenId int) (*NFTMetadataOwner, error) {
 //
 // Example
 //
-// 	nfts, err := contract.GetAll()
-// 	ownerOne := nfts[0].Owner
-// 	nameOne := nfts[0].Metadata.Name
+//	nfts, err := contract.GetAll()
+//	ownerOne := nfts[0].Owner
+//	nameOne := nfts[0].Metadata.Name
 func (erc721 *ERC721) GetAll() ([]*NFTMetadataOwner, error) {
 	if totalCount, err := erc721.GetTotalCount(); err != nil {
 		return nil, err
@@ -140,8 +140,8 @@ func (erc721 *ERC721) Balance() (int, error) {
 //
 // Example
 //
-// 	address := "{{wallet_address}}"
-// 	balance, err := contract.BalanceOf(address)
+//	address := "{{wallet_address}}"
+//	balance, err := contract.BalanceOf(address)
 func (erc721 *ERC721) BalanceOf(address string) (int, error) {
 	balance, err := erc721.abi.BalanceOf(&bind.CallOpts{}, common.HexToAddress(address))
 	if err != nil {
@@ -172,10 +172,10 @@ func (erc721 *ERC721) IsApproved(address string, operator string) (bool, error) 
 //
 // Example
 //
-// 	to := "0x..."
-// 	tokenId := 0
+//	to := "0x..."
+//	tokenId := 0
 //
-// 	tx, err := contract.Transfer(to, tokenId)
+//	tx, err := contract.Transfer(to, tokenId)
 func (erc721 *ERC721) Transfer(to string, tokenId int) (*types.Transaction, error) {
 	txOpts, err := erc721.helper.getTxOptions()
 	if err != nil {
@@ -196,8 +196,8 @@ func (erc721 *ERC721) Transfer(to string, tokenId int) (*types.Transaction, erro
 //
 // Example
 //
-// 	tokenId := 0
-// 	tx, err := contract.Burn(tokenId)
+//	tokenId := 0
+//	tx, err := contract.Burn(tokenId)
 func (erc721 *ERC721) Burn(tokenId int) (*types.Transaction, error) {
 	txOpts, err := erc721.helper.getTxOptions()
 	if err != nil {

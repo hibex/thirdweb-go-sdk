@@ -5,20 +5,20 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 )
 
 // You can access the Token interface from the SDK as follows:
 //
-// 	import (
-// 		"github.com/thirdweb-dev/go-sdk/thirdweb"
-// 	)
+//	import (
+//		"github.com/thirdweb-dev/go-sdk/thirdweb"
+//	)
 //
-// 	privateKey = "..."
+//	privateKey = "..."
 //
-// 	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
+//	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
 //		PrivateKey: privateKey,
-// 	})
+//	})
 //
 //	contract, err := sdk.GetToken("{{contract_address}}")
 type Token struct {
@@ -112,7 +112,7 @@ func (token *Token) Mint(amount float64) (*types.Transaction, error) {
 //
 // Example
 //
-// 	tx, err := contract.MintTo("{{wallet_address}}", 1)
+//	tx, err := contract.MintTo("{{wallet_address}}", 1)
 func (token *Token) MintTo(to string, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := token.normalizeAmount(amount)
 	if err != nil {
@@ -139,18 +139,18 @@ func (token *Token) MintTo(to string, amount float64) (*types.Transaction, error
 //
 // Example
 //
-// 	args = []*thirdweb.TokenAmount{
-// 		&thirdweb.TokenAmount{
-// 			ToAddress: "{{wallet_address}}",
-// 			Amount:    1
-// 		}
-// 		&thirdweb.TokenAmount{
-// 			ToAddress: "{{wallet_address}}",
-// 			Amount:    2
-// 		}
-// 	}
+//	args = []*thirdweb.TokenAmount{
+//		&thirdweb.TokenAmount{
+//			ToAddress: "{{wallet_address}}",
+//			Amount:    1
+//		}
+//		&thirdweb.TokenAmount{
+//			ToAddress: "{{wallet_address}}",
+//			Amount:    2
+//		}
+//	}
 //
-// 	tx, err := contract.MintBatchTo(args)
+//	tx, err := contract.MintBatchTo(args)
 func (token *Token) MintBatchTo(args []*TokenAmount) (*types.Transaction, error) {
 	encoded := [][]byte{}
 

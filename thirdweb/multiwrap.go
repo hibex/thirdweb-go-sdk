@@ -10,20 +10,20 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 )
 
 // You can access the Multiwrap interface from the SDK as follows:
 //
-// 	import (
-// 		"github.com/thirdweb-dev/go-sdk/thirdweb"
-// 	)
+//	import (
+//		"github.com/thirdweb-dev/go-sdk/thirdweb"
+//	)
 //
-// 	privateKey = "..."
+//	privateKey = "..."
 //
-// 	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
+//	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
 //		PrivateKey: privateKey,
-// 	})
+//	})
 //
 //	contract, err := sdk.GetMultiwrap("{{contract_address}}")
 type Multiwrap struct {
@@ -68,11 +68,11 @@ func newMultiwrap(provider *ethclient.Client, address common.Address, privateKey
 //
 // Example
 //
-// 	tokenId := 0
-// 	contents, err := contract.GetWrappedContents(tokenId)
-// 	erc20Tokens := contents.Erc20Tokens
-// 	erc721Tokens := contents.Erc721Tokens
-// 	erc1155Tokens := contents.Erc1155Tokens
+//	tokenId := 0
+//	contents, err := contract.GetWrappedContents(tokenId)
+//	erc20Tokens := contents.Erc20Tokens
+//	erc721Tokens := contents.Erc721Tokens
+//	erc1155Tokens := contents.Erc1155Tokens
 func (multiwrap *Multiwrap) GetWrappedContents(wrappedTokenId int) (*MultiwrapBundle, error) {
 	wrappedTokens, err := multiwrap.abi.GetWrappedContents(&bind.CallOpts{}, big.NewInt(int64(wrappedTokenId)))
 	if err != nil {
@@ -132,34 +132,34 @@ func (multiwrap *Multiwrap) GetWrappedContents(wrappedTokenId int) (*MultiwrapBu
 //
 // Example
 //
-// 	contents := &thirdweb.MultiwrapBundle{
-// 		ERC20Tokens: []*thirdweb.MultiwrapERC20{
-// 			&thirdweb.MultiwrapERC20{
-// 				ContractAddress: "0x...",
-// 				Quantity:        1,
-// 			},
-// 		},
-// 		ERC721Tokens: []*thirdweb.MultiwrapERC721{
-// 			&thirdweb.MultiwrapERC721{
-// 				ContractAddress: "0x...",
-// 				TokenId:         1,
-// 			},
-// 		},
-// 		ERC1155Tokens: []*thirdweb.MultiwrapERC1155{
-// 			&thirdweb.MultiwrapERC1155{
-// 				ContractAddress: "0x...",
-// 				TokenId:         1,
-// 				Quantity:        1,
-// 			},
-// 		},
-// 	}
+//	contents := &thirdweb.MultiwrapBundle{
+//		ERC20Tokens: []*thirdweb.MultiwrapERC20{
+//			&thirdweb.MultiwrapERC20{
+//				ContractAddress: "0x...",
+//				Quantity:        1,
+//			},
+//		},
+//		ERC721Tokens: []*thirdweb.MultiwrapERC721{
+//			&thirdweb.MultiwrapERC721{
+//				ContractAddress: "0x...",
+//				TokenId:         1,
+//			},
+//		},
+//		ERC1155Tokens: []*thirdweb.MultiwrapERC1155{
+//			&thirdweb.MultiwrapERC1155{
+//				ContractAddress: "0x...",
+//				TokenId:         1,
+//				Quantity:        1,
+//			},
+//		},
+//	}
 //
-// 	wrappedTokenMetadata := &thirdweb.NFTMetadataInput{
-// 		Name: "Wrapped Token"
-// 	}
+//	wrappedTokenMetadata := &thirdweb.NFTMetadataInput{
+//		Name: "Wrapped Token"
+//	}
 //
-// 	// This will mint the wrapped token to the connected wallet
-// 	tx, err := contract.Wrap(contents, wrappedTokenMetadata, "")
+//	// This will mint the wrapped token to the connected wallet
+//	tx, err := contract.Wrap(contents, wrappedTokenMetadata, "")
 func (multiwrap *Multiwrap) Wrap(contents *MultiwrapBundle, wrappedTokenMetadata interface{}, recipientAddress string) (*types.Transaction, error) {
 	uri, ok := wrappedTokenMetadata.(string)
 	if !ok {
@@ -207,8 +207,8 @@ func (multiwrap *Multiwrap) Wrap(contents *MultiwrapBundle, wrappedTokenMetadata
 //
 // Example
 //
-// 	tokenId := 0
-// 	tx, err := contract.Unwrap(tokenId, "")
+//	tokenId := 0
+//	tx, err := contract.Unwrap(tokenId, "")
 func (multiwrap *Multiwrap) Unwrap(wrappedTokenId int, recipientAddress string) (*types.Transaction, error) {
 	if recipientAddress == "" {
 		recipientAddress = multiwrap.helper.GetSignerAddress().String()

@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/hibex/thirdweb-go-sdk/thirdweb"
 	"github.com/spf13/cobra"
-	"github.com/thirdweb-dev/go-sdk/thirdweb"
 )
 
 var (

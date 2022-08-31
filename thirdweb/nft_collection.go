@@ -7,20 +7,20 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 )
 
 // You can access the NFT Collection interface from the SDK as follows:
 //
-// 	import (
-// 		"github.com/thirdweb-dev/go-sdk/thirdweb"
-// 	)
+//	import (
+//		"github.com/thirdweb-dev/go-sdk/thirdweb"
+//	)
 //
-// 	privateKey = "..."
+//	privateKey = "..."
 //
-// 	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
+//	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
 //		PrivateKey: privateKey,
-// 	})
+//	})
 //
 //	contract, err := sdk.GetNFTCollection("{{contract_address}}")
 type NFTCollection struct {
@@ -72,9 +72,9 @@ func newNFTCollection(provider *ethclient.Client, address common.Address, privat
 //
 // Example
 //
-// 	owner := "{{wallet_address}}"
-// 	nfts, err := contract.GetOwned(owner)
-// 	name := nfts[0].Metadata.Name
+//	owner := "{{wallet_address}}"
+//	nfts, err := contract.GetOwned(owner)
+//	name := nfts[0].Metadata.Name
 func (nft *NFTCollection) GetOwned(address string) ([]*NFTMetadataOwner, error) {
 	if address == "" {
 		address = nft.helper.GetSignerAddress().String()
@@ -132,16 +132,16 @@ func (nft *NFTCollection) Mint(metadata *NFTMetadataInput) (*types.Transaction, 
 //
 // Example
 //
-// 	image, err := os.Open("path/to/image.jpg")
-// 	defer image.Close()
+//	image, err := os.Open("path/to/image.jpg")
+//	defer image.Close()
 //
-// 	metadata := &thirdweb.NFTMetadataInput{
-// 		Name: "Cool NFT",
-// 		Description: "This is a cool NFT",
-// 		Image: image,
-// 	}
+//	metadata := &thirdweb.NFTMetadataInput{
+//		Name: "Cool NFT",
+//		Description: "This is a cool NFT",
+//		Image: image,
+//	}
 //
-// 	tx, err := contract.MintTo("{{wallet_address}}", metadata)
+//	tx, err := contract.MintTo("{{wallet_address}}", metadata)
 func (nft *NFTCollection) MintTo(address string, metadata *NFTMetadataInput) (*types.Transaction, error) {
 	uri, err := uploadOrExtractUri(metadata, nft.storage)
 	if err != nil {
@@ -184,18 +184,18 @@ func (nft *NFTCollection) MintBatch(metadatas []*NFTMetadataInput) (*types.Trans
 //
 // Example
 //
-// 	metadatas := []*thirdweb.NFTMetadataInput{
-// 		&thirdweb.NFTMetadataInput{
-// 			Name: "Cool NFT",
-// 			Description: "This is a cool NFT",
-// 		}
-// 		&thirdweb.NFTMetadataInput{
-// 			Name: "Cool NFT 2",
-// 			Description: "This is also a cool NFT",
-// 		}
-// 	}
+//	metadatas := []*thirdweb.NFTMetadataInput{
+//		&thirdweb.NFTMetadataInput{
+//			Name: "Cool NFT",
+//			Description: "This is a cool NFT",
+//		}
+//		&thirdweb.NFTMetadataInput{
+//			Name: "Cool NFT 2",
+//			Description: "This is also a cool NFT",
+//		}
+//	}
 //
-// 	tx, err := contract.MintBatchTo("{{wallet_address}}", metadatas)
+//	tx, err := contract.MintBatchTo("{{wallet_address}}", metadatas)
 func (nft *NFTCollection) MintBatchTo(address string, metadatas []*NFTMetadataInput) (*types.Transaction, error) {
 	uris, err := uploadOrExtractUris(metadatas, nft.storage)
 	if err != nil {

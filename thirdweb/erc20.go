@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/thirdweb-dev/go-sdk/internal/abi"
+	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 )
 
 // This interface is currently support by the Token contract. You can access
@@ -38,8 +38,8 @@ func newERC20(provider *ethclient.Client, address common.Address, privateKey str
 //
 // Example
 //
-// 	currency, err := contract.Get()
-// 	symbol := currency.Symbol
+//	currency, err := contract.Get()
+//	symbol := currency.Symbol
 func (erc20 *ERC20) Get() (*Currency, error) {
 	return fetchCurrencyMetadata(erc20.helper.GetProvider(), erc20.helper.getAddress().String())
 }
@@ -50,8 +50,8 @@ func (erc20 *ERC20) Get() (*Currency, error) {
 //
 // Example
 //
-// 	balance, err := contract.Balance()
-//  balanceValue := balance.DisplayValue
+//		balance, err := contract.Balance()
+//	 balanceValue := balance.DisplayValue
 func (erc20 *ERC20) Balance() (*CurrencyValue, error) {
 	return erc20.BalanceOf(erc20.helper.GetSignerAddress().String())
 }
@@ -64,9 +64,9 @@ func (erc20 *ERC20) Balance() (*CurrencyValue, error) {
 //
 // Example
 //
-// 	address := "{{wallet_address}}"
-// 	balance, err := contract.BalanceOf()
-//  balanceValue := balance.DisplayValue
+//		address := "{{wallet_address}}"
+//		balance, err := contract.BalanceOf()
+//	 balanceValue := balance.DisplayValue
 func (erc20 *ERC20) BalanceOf(address string) (*CurrencyValue, error) {
 	balanceOf, err := erc20.abi.BalanceOf(&bind.CallOpts{}, common.HexToAddress(address))
 	if err != nil {
@@ -96,9 +96,9 @@ func (erc20 *ERC20) TotalSupply() (*CurrencyValue, error) {
 //
 // Example
 //
-// 	spender := "0x..."
+//	spender := "0x..."
 //
-// 	allowance, err := contract.Allowance(spender)
+//	allowance, err := contract.Allowance(spender)
 //	allowanceValue := allowance.DisplayValue
 func (erc20 *ERC20) Allowance(spender string) (*CurrencyValue, error) {
 	return erc20.AllowanceOf(erc20.helper.GetSignerAddress().String(), spender)
@@ -114,10 +114,10 @@ func (erc20 *ERC20) Allowance(spender string) (*CurrencyValue, error) {
 //
 // Example
 //
-// 	address := "{{wallet_address}}"
-// 	spender := "0x..."
+//	address := "{{wallet_address}}"
+//	spender := "0x..."
 //
-// 	allowance, err := contract.AllowanceOf(address, spender)
+//	allowance, err := contract.AllowanceOf(address, spender)
 //	allowanceValue := allowance.DisplayValue
 func (erc20 *ERC20) AllowanceOf(owner string, spender string) (*CurrencyValue, error) {
 	allowance, err := erc20.abi.Allowance(&bind.CallOpts{}, common.HexToAddress(owner), common.HexToAddress(spender))
@@ -138,10 +138,10 @@ func (erc20 *ERC20) AllowanceOf(owner string, spender string) (*CurrencyValue, e
 //
 // Example
 //
-// 	to := "0x..."
-// 	amount := 1
+//	to := "0x..."
+//	amount := 1
 //
-// 	tx, err := contract.Transfer(to, amount)
+//	tx, err := contract.Transfer(to, amount)
 func (erc20 *ERC20) Transfer(to string, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
@@ -172,11 +172,11 @@ func (erc20 *ERC20) Transfer(to string, amount float64) (*types.Transaction, err
 //
 // Example
 //
-// 	from := "{{wallet_address}}"
-// 	to := "0x..."
-// 	amount := 1
+//	from := "{{wallet_address}}"
+//	to := "0x..."
+//	amount := 1
 //
-// 	tx, err := contract.TransferFrom(from, to, amount)
+//	tx, err := contract.TransferFrom(from, to, amount)
 func (erc20 *ERC20) TransferFrom(from string, to string, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
@@ -205,10 +205,10 @@ func (erc20 *ERC20) TransferFrom(from string, to string, amount float64) (*types
 //
 // Example
 //
-// 	spender := "0x..."
-// 	amount := 1
+//	spender := "0x..."
+//	amount := 1
 //
-// 	tx, err := contract.SetAllowance(spender, amount)
+//	tx, err := contract.SetAllowance(spender, amount)
 func (erc20 *ERC20) SetAllowance(spender string, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
@@ -235,18 +235,18 @@ func (erc20 *ERC20) SetAllowance(spender string, amount float64) (*types.Transac
 //
 // Example
 //
-// 	args = []*thirdweb.TokenAmount{
-// 		&thirdweb.TokenAmount{
-// 			ToAddress: "0x...",
-// 			Amount:    1
-// 		}
-// 		&thirdweb.TokenAmount{
-// 			ToAddress: "0x...",
-// 			Amount:    2
-// 		}
-// 	}
+//	args = []*thirdweb.TokenAmount{
+//		&thirdweb.TokenAmount{
+//			ToAddress: "0x...",
+//			Amount:    1
+//		}
+//		&thirdweb.TokenAmount{
+//			ToAddress: "0x...",
+//			Amount:    2
+//		}
+//	}
 //
-// 	tx, err := contract.TransferBatch(args)
+//	tx, err := contract.TransferBatch(args)
 func (erc20 *ERC20) TransferBatch(args []*TokenAmount) (*types.Transaction, error) {
 	encoded := [][]byte{}
 
@@ -288,8 +288,8 @@ func (erc20 *ERC20) TransferBatch(args []*TokenAmount) (*types.Transaction, erro
 //
 // Example
 //
-// 	amount := 1
-// 	tx, err := contract.Burn(amount)
+//	amount := 1
+//	tx, err := contract.Burn(amount)
 func (erc20 *ERC20) Burn(amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
@@ -318,10 +318,10 @@ func (erc20 *ERC20) Burn(amount float64) (*types.Transaction, error) {
 //
 // Example
 //
-// 	holder := "0x..."
-// 	amount := 1
+//	holder := "0x..."
+//	amount := 1
 //
-// 	tx, err := contract.BurnFrom(holder, amount)
+//	tx, err := contract.BurnFrom(holder, amount)
 func (erc20 *ERC20) BurnFrom(holder string, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
