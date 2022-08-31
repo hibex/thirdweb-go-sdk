@@ -314,13 +314,27 @@ func (drop *NFTDrop) ClaimTo(destinationAddress string, quantity int) (*types.Tr
 	return drop.helper.awaitTx(tx.Hash())
 }
 
-func (drop *NFTDrop) GrantRoles(role string, address string) (*types.Transaction, error) {
+func (drop *NFTDrop) GrantRole(role string, address string) (*types.Transaction, error) {
 	txOpts, err := drop.helper.getTxOptions()
 	if err != nil {
 		return nil, err
 	}
 	roleHash := common.HexToHash(role)
 	tx, err := drop.abi.GrantRole(txOpts, roleHash, common.HexToAddress(address))
+	if err != nil {
+		return nil, err
+	}
+
+	return drop.helper.awaitTx(tx.Hash())
+}
+
+func (drop *NFTDrop) RevokeRole(role string, address string) (*types.Transaction, error) {
+	txOpts, err := drop.helper.getTxOptions()
+	if err != nil {
+		return nil, err
+	}
+	roleHash := common.HexToHash(role)
+	tx, err := drop.abi.RevokeRole(txOpts, roleHash, common.HexToAddress(address))
 	if err != nil {
 		return nil, err
 	}
