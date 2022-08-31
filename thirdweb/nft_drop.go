@@ -13,15 +13,15 @@ import (
 
 // You can access the NFT Drop interface from the SDK as follows:
 //
-// 	import (
-// 		"github.com/thirdweb-dev/go-sdk/thirdweb"
-// 	)
+//	import (
+//		"github.com/thirdweb-dev/go-sdk/thirdweb"
+//	)
 //
-// 	privateKey = "..."
+//	privateKey = "..."
 //
-// 	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
+//	sdk, err := thirdweb.NewThirdwebSDK("mumbai", &thirdweb.SDKOptions{
 //		PrivateKey: privateKey,
-// 	})
+//	})
 //
 //	contract, err := sdk.GetNFTDrop("{{contract_address}}")
 type NFTDrop struct {
@@ -73,9 +73,9 @@ func newNFTDrop(provider *ethclient.Client, address common.Address, privateKey s
 //
 // Example
 //
-// 	owner := "{{wallet_address}}"
-// 	nfts, err := contract.GetOwned(owner)
-// 	name := nfts[0].Metadata.Name
+//	owner := "{{wallet_address}}"
+//	nfts, err := contract.GetOwned(owner)
+//	name := nfts[0].Metadata.Name
 func (nft *NFTDrop) GetOwned(address string) ([]*NFTMetadataOwner, error) {
 	if address == "" {
 		address = nft.helper.GetSignerAddress().String()
@@ -119,8 +119,8 @@ func (nft *NFTDrop) GetOwnedTokenIDs(address string) ([]*big.Int, error) {
 //
 // Example
 //
-// 	claimedNfts, err := contract.GetAllClaimed()
-// 	firstOwner := claimedNfts[0].Owner
+//	claimedNfts, err := contract.GetAllClaimed()
+//	firstOwner := claimedNfts[0].Owner
 func (drop *NFTDrop) GetAllClaimed() ([]*NFTMetadataOwner, error) {
 	if maxId, err := drop.abi.NextTokenIdToClaim(&bind.CallOpts{}); err != nil {
 		return nil, err
@@ -143,8 +143,8 @@ func (drop *NFTDrop) GetAllClaimed() ([]*NFTMetadataOwner, error) {
 //
 // Example
 //
-// 	unclaimedNfts, err := contract.GetAllUnclaimed()
-// 	firstNftName := unclaimedNfts[0].Name
+//	unclaimedNfts, err := contract.GetAllUnclaimed()
+//	firstNftName := unclaimedNfts[0].Name
 func (drop *NFTDrop) GetAllUnclaimed() ([]*NFTMetadata, error) {
 	maxId, err := drop.abi.NextTokenIdToMint(&bind.CallOpts{})
 	if err != nil {
@@ -199,26 +199,26 @@ func (drop *NFTDrop) TotalUnclaimedSupply() (int, error) {
 //
 // Example
 //
-// 	image0, err := os.Open("path/to/image/0.jpg")
-// 	defer image0.Close()
+//	image0, err := os.Open("path/to/image/0.jpg")
+//	defer image0.Close()
 //
-// 	image1, err := os.Open("path/to/image/1.jpg")
-// 	defer image1.Close()
+//	image1, err := os.Open("path/to/image/1.jpg")
+//	defer image1.Close()
 //
-// 	metadatas := []*thirdweb.NFTMetadataInput{
-// 		&thirdweb.NFTMetadataInput{
-// 			Name: "Cool NFT",
-// 			Description: "This is a cool NFT",
-// 			Image: image1
-// 		}
-// 		&thirdweb.NFTMetadataInput{
-// 			Name: "Cool NFT 2",
-// 			Description: "This is also a cool NFT",
-// 			Image: image2
-// 		}
-// 	}
+//	metadatas := []*thirdweb.NFTMetadataInput{
+//		&thirdweb.NFTMetadataInput{
+//			Name: "Cool NFT",
+//			Description: "This is a cool NFT",
+//			Image: image1
+//		}
+//		&thirdweb.NFTMetadataInput{
+//			Name: "Cool NFT 2",
+//			Description: "This is also a cool NFT",
+//			Image: image2
+//		}
+//	}
 //
-// 	tx, err := contract.CreateBatch(metadatas)
+//	tx, err := contract.CreateBatch(metadatas)
 func (drop *NFTDrop) CreateBatch(metadatas []*NFTMetadataInput) (*types.Transaction, error) {
 	startNumber, err := drop.abi.NextTokenIdToMint(&bind.CallOpts{})
 	if err != nil {
@@ -281,10 +281,10 @@ func (drop *NFTDrop) Claim(quantity int) (*types.Transaction, error) {
 //
 // Example
 //
-// 	address := "{{wallet_address}}"
-// 	quantity = 1
+//	address := "{{wallet_address}}"
+//	quantity = 1
 //
-// 	tx, err := contract.ClaimTo(address, quantity)
+//	tx, err := contract.ClaimTo(address, quantity)
 func (drop *NFTDrop) ClaimTo(destinationAddress string, quantity int) (*types.Transaction, error) {
 	claimVerification, err := drop.prepareClaim(quantity)
 	if err != nil {
@@ -307,6 +307,19 @@ func (drop *NFTDrop) ClaimTo(destinationAddress string, quantity int) (*types.Tr
 		claimVerification.proofs,
 		big.NewInt(int64(claimVerification.maxQuantityPerTransaction)),
 	)
+	if err != nil {
+		return nil, err
+	}
+
+	return drop.helper.awaitTx(tx.Hash())
+}
+
+func (drop *NFTDrop) GrantRoles(role string, address string) (*types.Transaction, error) {
+	txOpts, err := drop.helper.getTxOptions()
+	if err != nil {
+		return nil, err
+	}
+	tx, err := drop.abi.GrantRole(txOpts, common.BytesToHash([]byte(role)), common.HexToAddress(address))
 	if err != nil {
 		return nil, err
 	}
