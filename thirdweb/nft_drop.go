@@ -319,7 +319,8 @@ func (drop *NFTDrop) GrantRoles(role string, address string) (*types.Transaction
 	if err != nil {
 		return nil, err
 	}
-	tx, err := drop.abi.GrantRole(txOpts, common.BytesToHash([]byte(role)), common.HexToAddress(address))
+	roleHash := common.HexToHash(role)
+	tx, err := drop.abi.GrantRole(txOpts, roleHash, common.HexToAddress(address))
 	if err != nil {
 		return nil, err
 	}
