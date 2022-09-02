@@ -3,14 +3,13 @@ module github.com/hibex/thirdweb-go-sdk
 go 1.16
 
 require (
-	github.com/ethereum/go-ethereum v1.10.15
+	github.com/ethereum/go-ethereum v1.10.17
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.11.0
 )
 
 require (
-	github.com/btcsuite/btcd v0.22.0-beta // indirect
-	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
+	github.com/btcsuite/btcd/btcutil v1.1.2
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/fxamacker/cbor v1.5.1
 	github.com/go-stack/stack v1.8.1 // indirect
