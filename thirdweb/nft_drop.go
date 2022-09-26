@@ -317,8 +317,8 @@ func (drop *NFTDrop) ClaimTo(ctx context.Context, destinationAddress string, qua
 	return drop.helper.awaitTx(tx.Hash())
 }
 
-func (drop *NFTDrop) GrantRole(role string, address string) (*types.Transaction, error) {
-	txOpts, err := drop.helper.getTxOptions()
+func (drop *NFTDrop) GrantRole(ctx context.Context, role string, address string) (*types.Transaction, error) {
+	txOpts, err := drop.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -331,8 +331,8 @@ func (drop *NFTDrop) GrantRole(role string, address string) (*types.Transaction,
 	return drop.helper.awaitTx(tx.Hash())
 }
 
-func (drop *NFTDrop) RevokeRole(role string, address string) (*types.Transaction, error) {
-	txOpts, err := drop.helper.getTxOptions()
+func (drop *NFTDrop) RevokeRole(ctx context.Context, role string, address string) (*types.Transaction, error) {
+	txOpts, err := drop.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
