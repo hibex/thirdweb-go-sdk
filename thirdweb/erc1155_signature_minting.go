@@ -1,6 +1,7 @@
 package thirdweb
 
 import (
+	"context"
 	"fmt"
 	"math/big"
 
@@ -12,7 +13,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	signerTypes "github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/google/uuid"
-	"github.com/hibex/thirdweb-go-sdk/internal/abi"
+	"github.com/thirdweb-dev/go-sdk/abi"
 )
 
 // You can access this interface from the edition contract under the
@@ -48,13 +49,13 @@ func newERC1155SignatureMinting(provider *ethclient.Client, address common.Addre
 //	// Learn more about how to craft a payload in the Generate() function
 //	signedPayload, err := contract.Signature.Generate(payload)
 //	tx, err := contract.Signature.Mint(signedPayload)
-func (signature *ERC1155SignatureMinting) Mint(signedPayload *SignedPayload1155) (*types.Transaction, error) {
+func (signature *ERC1155SignatureMinting) Mint(ctx context.Context, signedPayload *SignedPayload1155) (*types.Transaction, error) {
 	message, err := signature.mapPayloadToContractStruct(signedPayload.Payload)
 	if err != nil {
 		return nil, err
 	}
 
-	txOpts, err := signature.helper.getTxOptions()
+	txOpts, err := signature.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func (signature *ERC1155SignatureMinting) Mint(signedPayload *SignedPayload1155)
 //	// Learn more about how to craft multiple payloads in the GenerateBatch() function
 //	signedPayloads, err := contract.Signature.GenerateBatch(payloads)
 //	tx, err := contract.Signature.MintBatch(signedPayloads)
-func (signature *ERC1155SignatureMinting) MintBatch(signedPayloads []*SignedPayload1155) (*types.Transaction, error) {
+func (signature *ERC1155SignatureMinting) MintBatch(ctx context.Context, signedPayloads []*SignedPayload1155) (*types.Transaction, error) {
 	contractPayloads := []*abi.ITokenERC1155MintRequest{}
 	for _, signedPayload := range signedPayloads {
 		if signedPayload.Payload.Price > 0 {
@@ -101,7 +102,7 @@ func (signature *ERC1155SignatureMinting) MintBatch(signedPayloads []*SignedPayl
 
 	encoded := [][]byte{}
 	for i, payload := range contractPayloads {
-		txOpts, err := signature.helper.getEncodedTxOptions()
+		txOpts, err := signature.helper.getEncodedTxOptions(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -113,7 +114,7 @@ func (signature *ERC1155SignatureMinting) MintBatch(signedPayloads []*SignedPayl
 		encoded = append(encoded, tx.Data())
 	}
 
-	txOpts, err := signature.helper.getTxOptions()
+	txOpts, err := signature.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}

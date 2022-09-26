@@ -1,14 +1,15 @@
 package thirdweb
 
 import (
+	"context"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 	"github.com/mitchellh/mapstructure"
+	"github.com/thirdweb-dev/go-sdk/abi"
 )
 
 // You can access the Edition Drop interface from the SDK as follows:
@@ -98,8 +99,8 @@ func newEditionDrop(provider *ethclient.Client, address common.Address, privateK
 //		},
 //	}
 //
-//	tx, err := contract.MintBatchTo("{{wallet_address}}", metadatasWithSupply)
-func (drop *EditionDrop) CreateBatch(metadatas []*NFTMetadataInput) (*types.Transaction, error) {
+//	tx, err := contract.MintBatchTo(context.Background(), "{{wallet_address}}", metadatasWithSupply)
+func (drop *EditionDrop) CreateBatch(ctx context.Context, metadatas []*NFTMetadataInput) (*types.Transaction, error) {
 	startNumber, err := drop.abi.NextTokenIdToMint(&bind.CallOpts{})
 	if err != nil {
 		return nil, err
@@ -123,7 +124,7 @@ func (drop *EditionDrop) CreateBatch(metadatas []*NFTMetadataInput) (*types.Tran
 		signerAddress,
 	)
 
-	txOpts, err := drop.helper.getTxOptions()
+	txOpts, err := drop.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -146,9 +147,9 @@ func (drop *EditionDrop) CreateBatch(metadatas []*NFTMetadataInput) (*types.Tran
 // quantity: the number of NFTs to claim
 //
 // returns: the transaction receipt of the claim
-func (drop *EditionDrop) Claim(tokenId int, quantity int) (*types.Transaction, error) {
+func (drop *EditionDrop) Claim(ctx context.Context, tokenId int, quantity int) (*types.Transaction, error) {
 	address := drop.helper.GetSignerAddress().String()
-	return drop.ClaimTo(address, tokenId, quantity)
+	return drop.ClaimTo(ctx, address, tokenId, quantity)
 }
 
 // Claim NFTs from this contract to the connect wallet.
@@ -167,14 +168,14 @@ func (drop *EditionDrop) Claim(tokenId int, quantity int) (*types.Transaction, e
 //	tokenId = 0
 //	quantity = 1
 //
-//	tx, err := contract.ClaimTo(address, tokenId, quantity)
-func (drop *EditionDrop) ClaimTo(destinationAddress string, tokenId int, quantity int) (*types.Transaction, error) {
-	claimVerification, err := drop.prepareClaim(tokenId, quantity)
+//	tx, err := contract.ClaimTo(context.Background(), address, tokenId, quantity)
+func (drop *EditionDrop) ClaimTo(ctx context.Context, destinationAddress string, tokenId int, quantity int) (*types.Transaction, error) {
+	claimVerification, err := drop.prepareClaim(ctx, tokenId, quantity)
 	if err != nil {
 		return nil, err
 	}
 
-	txOpts, err := drop.helper.getTxOptions()
+	txOpts, err := drop.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -195,13 +196,14 @@ func (drop *EditionDrop) ClaimTo(destinationAddress string, tokenId int, quantit
 	return drop.helper.awaitTx(tx.Hash())
 }
 
-func (drop *EditionDrop) prepareClaim(tokenId int, quantity int) (*ClaimVerification, error) {
+func (drop *EditionDrop) prepareClaim(ctx context.Context, tokenId int, quantity int) (*ClaimVerification, error) {
 	claimCondition, err := drop.ClaimConditions.GetActive(tokenId)
 	if err != nil {
 		return nil, err
 	}
 
 	claimVerification, err := prepareClaim(
+		ctx,
 		quantity,
 		claimCondition,
 		drop.helper,

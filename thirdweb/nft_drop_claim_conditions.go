@@ -6,7 +6,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/hibex/thirdweb-go-sdk/internal/abi"
+	"github.com/thirdweb-dev/go-sdk/abi"
 )
 
 // This interface is currently accessible from the NFT Drop contract contract type
@@ -36,15 +36,15 @@ func newNFTDropClaimConditions(address common.Address, provider *ethclient.Clien
 //
 // Example
 //
-//	condition, err := contract.ClaimConditions.GetActive()
+// 	condition, err := contract.ClaimConditions.GetActive()
 //
-//	// Now you have access to all the claim condition metadata
-//	fmt.Println("Start Time:", condition.StartTime)
-//	fmt.Println("Available:", condition.AvailableSupply)
-//	fmt.Println("Quantity:", condition.MaxQuantity)
-//	fmt.Println("Quantity Limit:", condition.QuantityLimitPerTransaction)
-//	fmt.Println("Price:", condition.Price)
-//	fmt.Println("Wait In Seconds", condition.WaitInSeconds)
+// 	// Now you have access to all the claim condition metadata
+// 	fmt.Println("Start Time:", condition.StartTime)
+// 	fmt.Println("Available:", condition.AvailableSupply)
+// 	fmt.Println("Quantity:", condition.MaxQuantity)
+// 	fmt.Println("Quantity Limit:", condition.QuantityLimitPerTransaction)
+// 	fmt.Println("Price:", condition.Price)
+// 	fmt.Println("Wait In Seconds", condition.WaitInSeconds)
 func (claim *NFTDropClaimConditions) GetActive() (*ClaimConditionOutput, error) {
 	id, err := claim.abi.GetActiveClaimConditionId(&bind.CallOpts{})
 	if err != nil {

@@ -1,6 +1,7 @@
 package thirdweb
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -10,7 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/hibex/thirdweb-go-sdk/internal/abi"
+	"github.com/thirdweb-dev/go-sdk/abi"
 )
 
 // You can access the Multiwrap interface from the SDK as follows:
@@ -160,7 +161,7 @@ func (multiwrap *Multiwrap) GetWrappedContents(wrappedTokenId int) (*MultiwrapBu
 //
 //	// This will mint the wrapped token to the connected wallet
 //	tx, err := contract.Wrap(contents, wrappedTokenMetadata, "")
-func (multiwrap *Multiwrap) Wrap(contents *MultiwrapBundle, wrappedTokenMetadata interface{}, recipientAddress string) (*types.Transaction, error) {
+func (multiwrap *Multiwrap) Wrap(ctx context.Context, contents *MultiwrapBundle, wrappedTokenMetadata interface{}, recipientAddress string) (*types.Transaction, error) {
 	uri, ok := wrappedTokenMetadata.(string)
 	if !ok {
 		tokenMetadata, ok := wrappedTokenMetadata.(*NFTMetadataInput)
@@ -185,7 +186,7 @@ func (multiwrap *Multiwrap) Wrap(contents *MultiwrapBundle, wrappedTokenMetadata
 		return nil, err
 	}
 
-	txOpts, err := multiwrap.helper.getTxOptions()
+	txOpts, err := multiwrap.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -208,13 +209,13 @@ func (multiwrap *Multiwrap) Wrap(contents *MultiwrapBundle, wrappedTokenMetadata
 // Example
 //
 //	tokenId := 0
-//	tx, err := contract.Unwrap(tokenId, "")
-func (multiwrap *Multiwrap) Unwrap(wrappedTokenId int, recipientAddress string) (*types.Transaction, error) {
+//	tx, err := contract.Unwrap(context.Background(), tokenId, "")
+func (multiwrap *Multiwrap) Unwrap(ctx context.Context, wrappedTokenId int, recipientAddress string) (*types.Transaction, error) {
 	if recipientAddress == "" {
 		recipientAddress = multiwrap.helper.GetSignerAddress().String()
 	}
 
-	txOpts, err := multiwrap.helper.getTxOptions()
+	txOpts, err := multiwrap.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}

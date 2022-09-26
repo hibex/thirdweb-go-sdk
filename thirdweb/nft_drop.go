@@ -1,14 +1,15 @@
 package thirdweb
 
 import (
+	"context"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 	"github.com/mitchellh/mapstructure"
+	"github.com/thirdweb-dev/go-sdk/abi"
 )
 
 // You can access the NFT Drop interface from the SDK as follows:
@@ -74,17 +75,17 @@ func newNFTDrop(provider *ethclient.Client, address common.Address, privateKey s
 // Example
 //
 //	owner := "{{wallet_address}}"
-//	nfts, err := contract.GetOwned(owner)
+//	nfts, err := contract.GetOwned(context.Background(), owner)
 //	name := nfts[0].Metadata.Name
-func (nft *NFTDrop) GetOwned(address string) ([]*NFTMetadataOwner, error) {
+func (nft *NFTDrop) GetOwned(ctx context.Context, address string) ([]*NFTMetadataOwner, error) {
 	if address == "" {
 		address = nft.helper.GetSignerAddress().String()
 	}
 
-	if tokenIds, err := nft.GetOwnedTokenIDs(address); err != nil {
+	if tokenIds, err := nft.GetOwnedTokenIDs(ctx, address); err != nil {
 		return nil, err
 	} else {
-		return nft.fetchNFTsByTokenId(tokenIds)
+		return nft.fetchNFTsByTokenId(ctx, tokenIds)
 	}
 }
 
@@ -93,12 +94,14 @@ func (nft *NFTDrop) GetOwned(address string) ([]*NFTMetadataOwner, error) {
 // address: the address of the owner of the NFTs
 //
 // returns: the tokenIds of all the NFTs owned by the address
-func (nft *NFTDrop) GetOwnedTokenIDs(address string) ([]*big.Int, error) {
+func (nft *NFTDrop) GetOwnedTokenIDs(ctx context.Context, address string) ([]*big.Int, error) {
 	if address == "" {
 		address = nft.helper.GetSignerAddress().String()
 	}
 
-	if balance, err := nft.abi.BalanceOf(&bind.CallOpts{}, common.HexToAddress(address)); err != nil {
+	if balance, err := nft.abi.BalanceOf(&bind.CallOpts{
+		Context: ctx,
+	}, common.HexToAddress(address)); err != nil {
 		return nil, err
 	} else {
 		tokenIds := []*big.Int{}
@@ -119,16 +122,16 @@ func (nft *NFTDrop) GetOwnedTokenIDs(address string) ([]*big.Int, error) {
 //
 // Example
 //
-//	claimedNfts, err := contract.GetAllClaimed()
+//	claimedNfts, err := contract.GetAllClaimed(context.Background())
 //	firstOwner := claimedNfts[0].Owner
-func (drop *NFTDrop) GetAllClaimed() ([]*NFTMetadataOwner, error) {
+func (drop *NFTDrop) GetAllClaimed(ctx context.Context) ([]*NFTMetadataOwner, error) {
 	if maxId, err := drop.abi.NextTokenIdToClaim(&bind.CallOpts{}); err != nil {
 		return nil, err
 	} else {
 		nfts := []*NFTMetadataOwner{}
 
 		for i := 0; i < int(maxId.Int64()); i++ {
-			if nft, err := drop.Get(i); err == nil {
+			if nft, err := drop.Get(ctx, i); err == nil {
 				nfts = append(nfts, nft)
 			}
 		}
@@ -143,9 +146,9 @@ func (drop *NFTDrop) GetAllClaimed() ([]*NFTMetadataOwner, error) {
 //
 // Example
 //
-//	unclaimedNfts, err := contract.GetAllUnclaimed()
+//	unclaimedNfts, err := contract.GetAllUnclaimed(context.Background())
 //	firstNftName := unclaimedNfts[0].Name
-func (drop *NFTDrop) GetAllUnclaimed() ([]*NFTMetadata, error) {
+func (drop *NFTDrop) GetAllUnclaimed(ctx context.Context) ([]*NFTMetadata, error) {
 	maxId, err := drop.abi.NextTokenIdToMint(&bind.CallOpts{})
 	if err != nil {
 		return nil, err
@@ -157,7 +160,7 @@ func (drop *NFTDrop) GetAllUnclaimed() ([]*NFTMetadata, error) {
 
 	nfts := []*NFTMetadata{}
 	for i := int(unmintedId.Int64()); i < int(maxId.Int64()); i++ {
-		if nft, err := drop.getTokenMetadata(i); err == nil {
+		if nft, err := drop.getTokenMetadata(ctx, i); err == nil {
 			nfts = append(nfts, nft)
 		}
 	}
@@ -218,8 +221,8 @@ func (drop *NFTDrop) TotalUnclaimedSupply() (int, error) {
 //		}
 //	}
 //
-//	tx, err := contract.CreateBatch(metadatas)
-func (drop *NFTDrop) CreateBatch(metadatas []*NFTMetadataInput) (*types.Transaction, error) {
+//	tx, err := contract.CreateBatch(context.Background(), metadatas)
+func (drop *NFTDrop) CreateBatch(ctx context.Context, metadatas []*NFTMetadataInput) (*types.Transaction, error) {
 	startNumber, err := drop.abi.NextTokenIdToMint(&bind.CallOpts{})
 	if err != nil {
 		return nil, err
@@ -244,7 +247,7 @@ func (drop *NFTDrop) CreateBatch(metadatas []*NFTMetadataInput) (*types.Transact
 		signerAddress,
 	)
 
-	txOpts, err := drop.helper.getTxOptions()
+	txOpts, err := drop.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -266,9 +269,9 @@ func (drop *NFTDrop) CreateBatch(metadatas []*NFTMetadataInput) (*types.Transact
 // quantity: the number of NFTs to claim
 //
 // returns: the transaction receipt of the claim
-func (drop *NFTDrop) Claim(quantity int) (*types.Transaction, error) {
+func (drop *NFTDrop) Claim(ctx context.Context, quantity int) (*types.Transaction, error) {
 	address := drop.helper.GetSignerAddress().String()
-	return drop.ClaimTo(address, quantity)
+	return drop.ClaimTo(ctx, address, quantity)
 }
 
 // Claim NFTs from this contract to the connect wallet.
@@ -284,14 +287,14 @@ func (drop *NFTDrop) Claim(quantity int) (*types.Transaction, error) {
 //	address := "{{wallet_address}}"
 //	quantity = 1
 //
-//	tx, err := contract.ClaimTo(address, quantity)
-func (drop *NFTDrop) ClaimTo(destinationAddress string, quantity int) (*types.Transaction, error) {
-	claimVerification, err := drop.prepareClaim(quantity)
+//	tx, err := contract.ClaimTo(context.Background(), address, quantity)
+func (drop *NFTDrop) ClaimTo(ctx context.Context, destinationAddress string, quantity int) (*types.Transaction, error) {
+	claimVerification, err := drop.prepareClaim(ctx, quantity)
 	if err != nil {
 		return nil, err
 	}
 
-	txOpts, err := drop.helper.getTxOptions()
+	txOpts, err := drop.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -342,13 +345,14 @@ func (drop *NFTDrop) RevokeRole(role string, address string) (*types.Transaction
 	return drop.helper.awaitTx(tx.Hash())
 }
 
-func (drop *NFTDrop) prepareClaim(quantity int) (*ClaimVerification, error) {
+func (drop *NFTDrop) prepareClaim(ctx context.Context, quantity int) (*ClaimVerification, error) {
 	claimCondition, err := drop.ClaimConditions.GetActive()
 	if err != nil {
 		return nil, err
 	}
 
 	claimVerification, err := prepareClaim(
+		ctx,
 		quantity,
 		claimCondition,
 		drop.helper,

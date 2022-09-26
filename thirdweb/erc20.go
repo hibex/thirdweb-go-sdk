@@ -1,13 +1,14 @@
 package thirdweb
 
 import (
+	"context"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/hibex/thirdweb-go-sdk/internal/abi"
+	"github.com/thirdweb-dev/go-sdk/abi"
 )
 
 // This interface is currently support by the Token contract. You can access
@@ -141,14 +142,14 @@ func (erc20 *ERC20) AllowanceOf(owner string, spender string) (*CurrencyValue, e
 //	to := "0x..."
 //	amount := 1
 //
-//	tx, err := contract.Transfer(to, amount)
-func (erc20 *ERC20) Transfer(to string, amount float64) (*types.Transaction, error) {
+//	tx, err := contract.Transfer(context.Background(), to, amount)
+func (erc20 *ERC20) Transfer(ctx context.Context, to string, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
 		return nil, err
 	}
 
-	txOpts, err := erc20.helper.getTxOptions()
+	txOpts, err := erc20.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -176,14 +177,14 @@ func (erc20 *ERC20) Transfer(to string, amount float64) (*types.Transaction, err
 //	to := "0x..."
 //	amount := 1
 //
-//	tx, err := contract.TransferFrom(from, to, amount)
-func (erc20 *ERC20) TransferFrom(from string, to string, amount float64) (*types.Transaction, error) {
+//	tx, err := contract.TransferFrom(context.Background(), from, to, amount)
+func (erc20 *ERC20) TransferFrom(ctx context.Context, from string, to string, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
 		return nil, err
 	}
 
-	txOpts, err := erc20.helper.getTxOptions()
+	txOpts, err := erc20.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -208,14 +209,14 @@ func (erc20 *ERC20) TransferFrom(from string, to string, amount float64) (*types
 //	spender := "0x..."
 //	amount := 1
 //
-//	tx, err := contract.SetAllowance(spender, amount)
-func (erc20 *ERC20) SetAllowance(spender string, amount float64) (*types.Transaction, error) {
+//	tx, err := contract.SetAllowance(context.Background(), spender, amount)
+func (erc20 *ERC20) SetAllowance(ctx context.Context, spender string, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
 		return nil, err
 	}
 
-	txOpts, err := erc20.helper.getTxOptions()
+	txOpts, err := erc20.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -246,8 +247,8 @@ func (erc20 *ERC20) SetAllowance(spender string, amount float64) (*types.Transac
 //		}
 //	}
 //
-//	tx, err := contract.TransferBatch(args)
-func (erc20 *ERC20) TransferBatch(args []*TokenAmount) (*types.Transaction, error) {
+//	tx, err := contract.TransferBatch(context.Background(), args)
+func (erc20 *ERC20) TransferBatch(ctx context.Context, args []*TokenAmount) (*types.Transaction, error) {
 	encoded := [][]byte{}
 
 	for _, arg := range args {
@@ -256,7 +257,7 @@ func (erc20 *ERC20) TransferBatch(args []*TokenAmount) (*types.Transaction, erro
 			return nil, err
 		}
 
-		txOpts, err := erc20.helper.getEncodedTxOptions()
+		txOpts, err := erc20.helper.getEncodedTxOptions(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -268,7 +269,7 @@ func (erc20 *ERC20) TransferBatch(args []*TokenAmount) (*types.Transaction, erro
 		encoded = append(encoded, tx.Data())
 	}
 
-	txOpts, err := erc20.helper.getTxOptions()
+	txOpts, err := erc20.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -289,14 +290,14 @@ func (erc20 *ERC20) TransferBatch(args []*TokenAmount) (*types.Transaction, erro
 // Example
 //
 //	amount := 1
-//	tx, err := contract.Burn(amount)
-func (erc20 *ERC20) Burn(amount float64) (*types.Transaction, error) {
+//	tx, err := contract.Burn(context.Background(), amount)
+func (erc20 *ERC20) Burn(ctx context.Context, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
 		return nil, err
 	}
 
-	txOpts, err := erc20.helper.getTxOptions()
+	txOpts, err := erc20.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -321,14 +322,14 @@ func (erc20 *ERC20) Burn(amount float64) (*types.Transaction, error) {
 //	holder := "0x..."
 //	amount := 1
 //
-//	tx, err := contract.BurnFrom(holder, amount)
-func (erc20 *ERC20) BurnFrom(holder string, amount float64) (*types.Transaction, error) {
+//	tx, err := contract.BurnFrom(context.Background(), holder, amount)
+func (erc20 *ERC20) BurnFrom(ctx context.Context, holder string, amount float64) (*types.Transaction, error) {
 	amountWithDecimals, err := erc20.normalizeAmount(amount)
 	if err != nil {
 		return nil, err
 	}
 
-	txOpts, err := erc20.helper.getTxOptions()
+	txOpts, err := erc20.helper.getTxOptions(ctx)
 	if err != nil {
 		return nil, err
 	}

@@ -9,8 +9,8 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/hibex/thirdweb-go-sdk/internal/abi"
 	"github.com/mitchellh/mapstructure"
+	"github.com/thirdweb-dev/go-sdk/abi"
 
 	gethAbi "github.com/ethereum/go-ethereum/accounts/abi"
 )
@@ -85,14 +85,15 @@ func newContractDeployer(provider *ethclient.Client, privateKey string, storage 
 //
 // Example
 //
-//	address, err := sdk.Deployer.DeployNFTCollection(
-//		&thirdweb.DeployNFTCollectionMetadata{
-//			Name: "Go NFT",
-//		}
-//	})
-func (deployer *ContractDeployer) DeployNFTCollection(metadata *DeployNFTCollectionMetadata) (string, error) {
+//		address, err := sdk.Deployer.DeployNFTCollection(
+//	     context.Background(),
+//			&thirdweb.DeployNFTCollectionMetadata{
+//				Name: "Go NFT",
+//			}
+//		})
+func (deployer *ContractDeployer) DeployNFTCollection(ctx context.Context, metadata *DeployNFTCollectionMetadata) (string, error) {
 	metadata.fillDefaults()
-	return deployer.deployContract("nft-collection", metadata)
+	return deployer.deployContract(ctx, "nft-collection", metadata)
 }
 
 // Deploy a new Edition contract.
@@ -103,14 +104,15 @@ func (deployer *ContractDeployer) DeployNFTCollection(metadata *DeployNFTCollect
 //
 // Example
 //
-//	address, err := sdk.Deployer.DeployEdition(
-//		&thirdweb.DeployEditionMetadata{
-//			Name: "Go Edition",
-//		}
-//	})
-func (deployer *ContractDeployer) DeployEdition(metadata *DeployEditionMetadata) (string, error) {
+//		address, err := sdk.Deployer.DeployEdition(
+//	     context.Background(),
+//			&thirdweb.DeployEditionMetadata{
+//				Name: "Go Edition",
+//			}
+//		})
+func (deployer *ContractDeployer) DeployEdition(ctx context.Context, metadata *DeployEditionMetadata) (string, error) {
 	metadata.fillDefaults()
-	return deployer.deployContract("edition", metadata)
+	return deployer.deployContract(ctx, "edition", metadata)
 }
 
 // Deploy a new Token contract.
@@ -121,14 +123,15 @@ func (deployer *ContractDeployer) DeployEdition(metadata *DeployEditionMetadata)
 //
 // Example
 //
-//	address, err := sdk.Deployer.DeployToken(
-//		&thirdweb.DeployTokenMetadata{
-//			Name: "Go Token",
-//		}
-//	})
-func (deployer *ContractDeployer) DeployToken(metadata *DeployTokenMetadata) (string, error) {
+//		address, err := sdk.Deployer.DeployToken(
+//	     context.Background(),
+//			&thirdweb.DeployTokenMetadata{
+//				Name: "Go Token",
+//			}
+//		})
+func (deployer *ContractDeployer) DeployToken(ctx context.Context, metadata *DeployTokenMetadata) (string, error) {
 	metadata.fillDefaults()
-	return deployer.deployContract("token", metadata)
+	return deployer.deployContract(ctx, "token", metadata)
 }
 
 // Deploy a new NFT Drop contract.
@@ -139,14 +142,15 @@ func (deployer *ContractDeployer) DeployToken(metadata *DeployTokenMetadata) (st
 //
 // Example
 //
-//	address, err := sdk.Deployer.DeployNFTDrop(
-//		&thirdweb.DeployNFTDropMetadata{
-//			Name: "Go NFT Drop",
-//		}
-//	})
-func (deployer *ContractDeployer) DeployNFTDrop(metadata *DeployNFTDropMetadata) (string, error) {
+//		address, err := sdk.Deployer.DeployNFTDrop(
+//	     context.Background(),
+//			&thirdweb.DeployNFTDropMetadata{
+//				Name: "Go NFT Drop",
+//			}
+//		})
+func (deployer *ContractDeployer) DeployNFTDrop(ctx context.Context, metadata *DeployNFTDropMetadata) (string, error) {
 	metadata.fillDefaults()
-	return deployer.deployContract("nft-drop", metadata)
+	return deployer.deployContract(ctx, "nft-drop", metadata)
 }
 
 // Deploy a new Edition Drop contract.
@@ -157,14 +161,15 @@ func (deployer *ContractDeployer) DeployNFTDrop(metadata *DeployNFTDropMetadata)
 //
 // Example
 //
-//	address, err := sdk.Deployer.DeployEditionDrop(
-//		&thirdweb.DeployEditionDropMetadata{
-//			Name: "Go Edition Drop",
-//		}
-//	})
-func (deployer *ContractDeployer) DeployEditionDrop(metadata *DeployEditionDropMetadata) (string, error) {
+//		address, err := sdk.Deployer.DeployEditionDrop(
+//	     context.Background(),
+//			&thirdweb.DeployEditionDropMetadata{
+//				Name: "Go Edition Drop",
+//			}
+//		})
+func (deployer *ContractDeployer) DeployEditionDrop(ctx context.Context, metadata *DeployEditionDropMetadata) (string, error) {
 	metadata.fillDefaults()
-	return deployer.deployContract("edition-drop", metadata)
+	return deployer.deployContract(ctx, "edition-drop", metadata)
 }
 
 // Deploy a new Multiwrap contract.
@@ -175,14 +180,15 @@ func (deployer *ContractDeployer) DeployEditionDrop(metadata *DeployEditionDropM
 //
 // Example
 //
-//	address, err := sdk.Deployer.DeployMultiwrap(
-//		&thirdweb.DeployMultiwrapMetadata{
-//			Name: "Go Multiwrap",
-//		}
-//	})
-func (deployer *ContractDeployer) DeployMultiwrap(metadata *DeployMultiwrapMetadata) (string, error) {
+//		address, err := sdk.Deployer.DeployMultiwrap(
+//	     context.Background()
+//			&thirdweb.DeployMultiwrapMetadata{
+//				Name: "Go Multiwrap",
+//			}
+//		})
+func (deployer *ContractDeployer) DeployMultiwrap(ctx context.Context, metadata *DeployMultiwrapMetadata) (string, error) {
 	metadata.fillDefaults()
-	return deployer.deployContract("multiwrap", metadata)
+	return deployer.deployContract(ctx, "multiwrap", metadata)
 }
 
 // Deploy a new Marketplace contract.
@@ -193,22 +199,27 @@ func (deployer *ContractDeployer) DeployMultiwrap(metadata *DeployMultiwrapMetad
 //
 // Example
 //
-//	address, err := sdk.Deployer.DeployMarketplace(
-//		&thirdweb.DeployMarketplaceMetadata{
-//			Name: "Go Marketplace",
-//		}
-//	})
-func (deployer *ContractDeployer) DeployMarketplace(metadata *DeployMarketplaceMetadata) (string, error) {
+//		address, err := sdk.Deployer.DeployMarketplace(
+//	     context.Background()
+//			&thirdweb.DeployMarketplaceMetadata{
+//				Name: "Go Marketplace",
+//			}
+//		})
+func (deployer *ContractDeployer) DeployMarketplace(ctx context.Context, metadata *DeployMarketplaceMetadata) (string, error) {
 	metadata.fillDefaults()
-	return deployer.deployContract("marketplace", metadata)
+	return deployer.deployContract(ctx, "marketplace", metadata)
 }
 
-func (deployer *ContractDeployer) deployContract(contractType string, metadata interface{}) (string, error) {
-
+func (deployer *ContractDeployer) deployContract(ctx context.Context, contractType string, metadata interface{}) (string, error) {
 	metadataToUpload := map[string]interface{}{}
 	err := mapstructure.Decode(metadata, &metadataToUpload)
 	if err != nil {
 		return "", err
+	}
+
+	// Set merkle default to {} for drop contracts
+	if _, ok := metadataToUpload["merkle"]; ok {
+		metadataToUpload["merkle"] = map[string]interface{}{}
 	}
 
 	contractUri, err := deployer.storage.Upload(
@@ -216,6 +227,10 @@ func (deployer *ContractDeployer) deployContract(contractType string, metadata i
 		deployer.helper.getAddress().String(),
 		deployer.helper.GetSignerAddress().String(),
 	)
+
+	// fmt.Println(contractUri)
+	// panic("Error!")
+
 	if err != nil {
 		return "", err
 	}
@@ -237,7 +252,7 @@ func (deployer *ContractDeployer) deployContract(contractType string, metadata i
 
 	encodedFunc, err := contractAbi.Pack("initialize", deployArguments...)
 
-	opts, err := deployer.helper.getTxOptions()
+	opts, err := deployer.helper.getTxOptions(ctx)
 	if err != nil {
 		return "", err
 	}

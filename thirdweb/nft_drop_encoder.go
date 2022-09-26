@@ -1,13 +1,14 @@
 package thirdweb
 
 import (
+	"context"
 	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/hibex/thirdweb-go-sdk/internal/abi"
+	"github.com/thirdweb-dev/go-sdk/abi"
 )
 
 // The nft drop encoder class is used to get the unsigned transaction data for nft drop contract
@@ -79,18 +80,19 @@ func newNFTDropEncoder(
 //	// Number of NFTs to claim
 //	quantity = 1
 //
-//	tx, err := contract.Encoder.ApproveClaimTo(signerAddress, destinationAddress, quantity)
+//	tx, err := contract.Encoder.ApproveClaimTo(context.Background(), signerAddress, destinationAddress, quantity)
 //
 //	// Now you can get all the standard transaction data as needed
 //	fmt.Println(tx.Data()) // Ex: get the data field or the nonce field (others are available)
 //	fmt.Println(tx.Nonce())
-func (encoder *NFTDropEncoder) ApproveClaimTo(signerAddress string, destinationAddress string, quantity int) (*types.Transaction, error) {
+func (encoder *NFTDropEncoder) ApproveClaimTo(ctx context.Context, signerAddress string, destinationAddress string, quantity int) (*types.Transaction, error) {
 	claimVerification, err := encoder.prepareClaim(quantity)
 	if err != nil {
 		return nil, err
 	}
 
 	return setErc20AllowanceEncoder(
+		ctx,
 		encoder.helper,
 		signerAddress,
 		claimVerification.value,
@@ -117,18 +119,18 @@ func (encoder *NFTDropEncoder) ApproveClaimTo(signerAddress string, destinationA
 //	// Number of NFTs to claim
 //	quantity = 1
 //
-//	tx, err := contract.Encoder.ClaimTo(signerAddress, destinationAddress, quantity)
+//	tx, err := contract.Encoder.ClaimTo(context.Background(), signerAddress, destinationAddress, quantity)
 //
 //	// Now you can get all the standard transaction data as needed
 //	fmt.Println(tx.Data()) // Ex: get the data field or the nonce field (others are available)
 //	fmt.Println(tx.Nonce())
-func (encoder *NFTDropEncoder) ClaimTo(signerAddress string, destinationAddress string, quantity int) (*types.Transaction, error) {
+func (encoder *NFTDropEncoder) ClaimTo(ctx context.Context, signerAddress string, destinationAddress string, quantity int) (*types.Transaction, error) {
 	claimVerification, err := encoder.prepareClaim(quantity)
 	if err != nil {
 		return nil, err
 	}
 
-	txOpts, err := encoder.helper.getUnsignedTxOptions(signerAddress)
+	txOpts, err := encoder.helper.getUnsignedTxOptions(ctx, signerAddress)
 	if err != nil {
 		return nil, err
 	}
